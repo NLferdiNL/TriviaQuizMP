@@ -61,15 +61,27 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Scripts\PlayerData.cs" />
-    <Compile Include="Assets\Scripts\QuestionDataClient.cs" />
-    <Compile Include="Assets\Scripts\QuestionDataServer.cs" />
-    <Compile Include="Assets\Scripts\QuestionReceiver.cs" />
-    <Compile Include="Assets\Scripts\TriviaGameManagerClient.cs" />
-    <Compile Include="Assets\Scripts\TriviaGameManagerServer.cs" />
-    <Compile Include="Assets\Scripts\UIManager.cs" />
+    <Compile Include="Assets\ScreenSwitchController.cs" />
+    <Compile Include="Assets\Scripts\GameScene\Client\Leaderboard\LeaderboardController.cs" />
+    <Compile Include="Assets\Scripts\GameScene\Client\Leaderboard\LeaderboardItem.cs" />
+    <Compile Include="Assets\Scripts\GameScene\Client\QuestionDataClient.cs" />
+    <Compile Include="Assets\Scripts\GameScene\Client\TriviaGameManagerClient.cs" />
+    <Compile Include="Assets\Scripts\GameScene\Client\UIManager.cs" />
+    <Compile Include="Assets\Scripts\GameScene\Server\PlayerData.cs" />
+    <Compile Include="Assets\Scripts\GameScene\Server\QuestionDataServer.cs" />
+    <Compile Include="Assets\Scripts\GameScene\Server\QuestionReceiver.cs" />
+    <Compile Include="Assets\Scripts\GameScene\Server\TriviaGameManagerServer.cs" />
+    <Compile Include="Assets\Scripts\GameScene\Shared\LeaderboardData.cs" />
+    <Compile Include="Assets\ThirdPartyAssets\DOTween\Modules\DOTweenModuleAudio.cs" />
+    <Compile Include="Assets\ThirdPartyAssets\DOTween\Modules\DOTweenModulePhysics.cs" />
+    <Compile Include="Assets\ThirdPartyAssets\DOTween\Modules\DOTweenModulePhysics2D.cs" />
+    <Compile Include="Assets\ThirdPartyAssets\DOTween\Modules\DOTweenModuleSprite.cs" />
+    <Compile Include="Assets\ThirdPartyAssets\DOTween\Modules\DOTweenModuleUI.cs" />
+    <Compile Include="Assets\ThirdPartyAssets\DOTween\Modules\DOTweenModuleUnityVersion.cs" />
+    <Compile Include="Assets\ThirdPartyAssets\DOTween\Modules\DOTweenModuleUtils.cs" />
     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_SDF-Surface-Mobile.shader" />
     <None Include="Assets\TextMesh Pro\Resources\LineBreaking Leading Characters.txt" />
+    <None Include="Assets\ThirdPartyAssets\DOTween\readme.txt" />
     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMPro_Properties.cginc" />
     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_Bitmap-Custom-Atlas.shader" />
     <None Include="Assets\TextMesh Pro\Resources\LineBreaking Following Characters.txt" />
@@ -86,16 +98,16 @@
     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_Sprite.shader" />
     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_SDF-Surface.shader" />
     <Reference Include="UnityEditor.StandardEvents">
-      <HintPath>C:/Users/Gebruiker/Desktop/Voxels3/TriviaQuizMP/Library/ScriptAssemblies/UnityEditor.StandardEvents.dll</HintPath>
+      <HintPath>C:/Users/Gebruiker/Documents/GitHub/TriviaQuizMP/Library/ScriptAssemblies/UnityEditor.StandardEvents.dll</HintPath>
     </Reference>
     <Reference Include="Unity.TextMeshPro.Editor">
-      <HintPath>C:/Users/Gebruiker/Desktop/Voxels3/TriviaQuizMP/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
+      <HintPath>C:/Users/Gebruiker/Documents/GitHub/TriviaQuizMP/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.PackageManagerUI.Editor">
-      <HintPath>C:/Users/Gebruiker/Desktop/Voxels3/TriviaQuizMP/Library/ScriptAssemblies/Unity.PackageManagerUI.Editor.dll</HintPath>
+      <HintPath>C:/Users/Gebruiker/Documents/GitHub/TriviaQuizMP/Library/ScriptAssemblies/Unity.PackageManagerUI.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.TextMeshPro">
-      <HintPath>C:/Users/Gebruiker/Desktop/Voxels3/TriviaQuizMP/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
+      <HintPath>C:/Users/Gebruiker/Documents/GitHub/TriviaQuizMP/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.AIModule">
       <HintPath>D:/Program Files/Unity/2018.2.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.AIModule.dll</HintPath>
@@ -297,6 +309,9 @@
     </Reference>
     <Reference Include="UnityEngine.SpatialTracking">
       <HintPath>D:/Program Files/Unity/2018.2.7f1/Editor/Data/UnityExtensions/Unity/UnitySpatialTracking/RuntimeEditor/UnityEngine.SpatialTracking.dll</HintPath>
+    </Reference>
+    <Reference Include="DOTween">
+      <HintPath>C:/Users/Gebruiker/Documents/GitHub/TriviaQuizMP/Assets/ThirdPartyAssets/DOTween/DOTween.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.Analytics">
       <HintPath>C:/Users/Gebruiker/AppData/Local/Unity/cache/packages/packages.unity.com/com.unity.analytics@2.0.16/UnityEngine.Analytics.dll</HintPath>
