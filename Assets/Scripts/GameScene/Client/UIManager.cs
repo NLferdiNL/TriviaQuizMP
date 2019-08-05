@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.Networking;
 
-public class UIManager : MonoBehaviour {
+public class UIManager : NetworkBehaviour {
 
 	[HideInInspector]
 	public TriviaGameManagerClient triviaGameManagerClient;
@@ -19,6 +20,11 @@ public class UIManager : MonoBehaviour {
 	private Color defaultAnswerButtonColor;
 
 	private void Start() {
+		if(!isLocalPlayer) {
+			enabled = false;
+			return;
+		}
+
 		answerButtons = new Button[answerLabels.Length];
 
 		for(int i = 0; i < answerButtons.Length; i++) {

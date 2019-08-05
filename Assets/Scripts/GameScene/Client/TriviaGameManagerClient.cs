@@ -25,7 +25,6 @@ public class TriviaGameManagerClient : NetworkBehaviour {
 	public void Start() {
 		if(isLocalPlayer == false) {
 			enabled = false;
-			uiManager.enabled = false;
 			gameObject.SetActive(false);
 			return;
 		}
@@ -34,8 +33,12 @@ public class TriviaGameManagerClient : NetworkBehaviour {
 		DG.Tweening.DOTween.Init(true, true);
 	}
 
-	[Command]
-	public void CmdChangeQuestion(QuestionDataClient questionData) {
+	[ClientRpc]
+	public void RpcChangeQuestion(QuestionDataClient questionData) {
+		if(!isLocalPlayer) {
+			return;
+		}
+		
 		if(correctAnswerIndex != chosenAnswerIndex && chosenAnswerIndex >= 0) {
 			uiManager.ColorAnswer(chosenAnswerIndex);
 		}
@@ -49,8 +52,12 @@ public class TriviaGameManagerClient : NetworkBehaviour {
 		chosenAnswerIndex = -1;
 	}
 
-	[Command]
-	public void CmdDisplayCorrectAnswer(int correctAnswerIndex) {
+	[ClientRpc]
+	public void RpcDisplayCorrectAnswer(int correctAnswerIndex) {
+		if(!isLocalPlayer) {
+			return;
+		}
+
 		this.correctAnswerIndex = correctAnswerIndex;
 
 		if(correctAnswerIndex != chosenAnswerIndex && chosenAnswerIndex >= 0) {
@@ -66,7 +73,20 @@ public class TriviaGameManagerClient : NetworkBehaviour {
 		}
 
 		chosenAnswerIndex = answerIndex;
+		
+		CmdReceiveAnswerFromClient(answerIndex);
+	}
 
-		triviaGameManagerServer.ReceiveAnswerFromClient(playerId, answerIndex);
+	[Command]
+	public void CmdReceiveAnswerFromClient(int answerIndex) {
+		if(!isServer) {
+			return;
+		}
+		
+		if(triviaGameManagerServer.players[playerId].chosenAnswerIndex < 0 &&
+		   (answerIndex >= 0 && answerIndex < triviaGameManagerServer.currentQuestionData.shuffled_answers.Length)) {
+			triviaGameManagerServer.playersAnswered++;
+			triviaGameManagerServer.players[playerId].chosenAnswerIndex = answerIndex;
+		}
 	}
 }

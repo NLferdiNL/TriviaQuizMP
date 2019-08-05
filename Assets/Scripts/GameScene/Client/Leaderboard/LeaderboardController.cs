@@ -48,8 +48,12 @@ public class LeaderboardController : NetworkBehaviour {
 		Invoke("DebugUpdate", 5);
 	}*/
 
-	[Command]
-	public void CmdSetLeaderboardData(LeaderboardData[] newLeaderboard) {
+	[ClientRpc]
+	public void RpcSetLeaderboardData(LeaderboardData[] newLeaderboard) {
+		if(!isLocalPlayer) {
+			return;
+		}
+		
 		players = players.OrderBy(i => i.PlayerId).ToList();
 
 		for(int i = players.Count - 1; i >= 0; i--) {
@@ -113,8 +117,8 @@ public class LeaderboardController : NetworkBehaviour {
 		}
 	}
 	
-	[Command]
-	public void CmdUpdatePositions(bool skipAnim) {
+	[ClientRpc]
+	public void RpcUpdatePositions(bool skipAnim) {
 		if(currentLeaderboardSequence != null && currentLeaderboardSequence.IsPlaying()) {
 			currentLeaderboardSequence.Kill();
 		}
