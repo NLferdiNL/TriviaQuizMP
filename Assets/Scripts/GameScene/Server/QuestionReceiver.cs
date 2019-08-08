@@ -11,10 +11,43 @@ public static class QuestionReceiver {
 	private static System.Random rng = new System.Random();
 
 	private static readonly Regex preRemove = new Regex("{\"response_code\":0,\"results\":\\[");
-	
-	public static IEnumerator GetQuestion(Action<QuestionDataServer> callback) {
 
-		UnityWebRequest webRequest = UnityWebRequest.Get("https://opentdb.com/api.php?amount=1&encode=base64");
+	private static string currentSessionToken = null;
+
+	private static IEnumerator GetKey() {
+		UnityWebRequest webRequest = UnityWebRequest.Get("https://opentdb.com/api_token.php?command=request");
+
+		yield return webRequest.SendWebRequest();
+
+		KeyRequestObject keyRequestObject = JsonUtility.FromJson<KeyRequestObject>(webRequest.downloadHandler.text);
+
+		if(keyRequestObject.response_code != 0) {
+			Debug.LogError(keyRequestObject.response_code + ": " + keyRequestObject.response_message);
+		} else {
+			currentSessionToken = keyRequestObject.token;
+		}
+	}
+
+	public static IEnumerator ResetKey() {
+		UnityWebRequest webRequest = UnityWebRequest.Get("https://opentdb.com/api_token.php?command=request");
+
+		yield return webRequest.SendWebRequest();
+
+		KeyRequestObject keyRequestObject = JsonUtility.FromJson<KeyRequestObject>(webRequest.downloadHandler.text);
+
+		if(keyRequestObject.response_code != 0) {
+			yield return GetKey();
+		} else {
+			currentSessionToken = keyRequestObject.token;
+		}
+	}
+
+	public static IEnumerator GetQuestion(Action<QuestionDataServer> callback) {
+		if(string.IsNullOrEmpty(currentSessionToken)) {
+			yield return GetKey();
+		}
+
+		UnityWebRequest webRequest = UnityWebRequest.Get("https://opentdb.com/api.php?amount=1&encode=base64&token=" + currentSessionToken);
 
 		yield return webRequest.SendWebRequest();
 

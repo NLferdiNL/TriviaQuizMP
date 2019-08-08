@@ -21,7 +21,7 @@ public class TriviaGameManagerClient : NetworkBehaviour {
 
 	private int correctAnswerIndex = -1;
 	private int chosenAnswerIndex = -1;
-	
+
 	public void Start() {
 		if(isLocalPlayer == false) {
 			enabled = false;
@@ -31,6 +31,42 @@ public class TriviaGameManagerClient : NetworkBehaviour {
 
 		uiManager.triviaGameManagerClient = this;
 		DG.Tweening.DOTween.Init(true, true);
+	}
+
+	[ClientRpc]
+	public void RpcLobbyChangeState(ScreenState newState) {
+		if(LobbyHudController.instance == null) {
+			return;
+		}
+
+		LobbyHudController.instance.ToggleScreen(newState);
+	}
+
+	[ClientRpc]
+	public void RpcChangeAnswerAcceptState(bool newState) {
+		if(uiManager == null) {
+			return;
+		}
+
+		uiManager.acceptAnswer = newState;
+	}
+
+	[ClientRpc]
+	public void RpcUpdatePlayerlistLobby(LeaderboardData[] newLeaderboard) {
+		if(LobbyHudController.instance == null) {
+			return;
+		}
+
+		LobbyHudController.instance.UpdateLobbyPlayerlist(newLeaderboard);
+	}
+
+	[ClientRpc]
+	public void RpcGetUsername() {
+		if(LobbyHudController.instance == null) {
+			CmdSendUsername("Player");
+		}
+
+		CmdSendUsername(LobbyHudController.instance.username);
 	}
 
 	[ClientRpc]
@@ -66,7 +102,27 @@ public class TriviaGameManagerClient : NetworkBehaviour {
 
 		uiManager.ColorAnswer(correctAnswerIndex, Color.green);
 	}
-	
+
+	[ClientRpc]
+	public void RpcStartTimer(float time) {
+		uiManager.StartTimer(time);
+	}
+
+	[ClientRpc]
+	public void RpcSyncTimer(float time) {
+		uiManager.SyncTimer(time);
+	}
+
+	[ClientRpc]
+	public void RpcStopTimer() {
+		uiManager.StopTimer();
+	}
+
+	[ClientRpc]
+	public void RpcResetTimer(float time) {
+		uiManager.ResetTimer(time);
+	}
+
 	public void SendAnswer(int answerIndex) {
 		if(chosenAnswerIndex >= 0) {
 			return;
@@ -82,11 +138,28 @@ public class TriviaGameManagerClient : NetworkBehaviour {
 		if(!isServer) {
 			return;
 		}
+
+		if(!triviaGameManagerServer.acceptingAnswers) {
+			return;
+		}
 		
 		if(triviaGameManagerServer.players[playerId].chosenAnswerIndex < 0 &&
 		   (answerIndex >= 0 && answerIndex < triviaGameManagerServer.currentQuestionData.shuffled_answers.Length)) {
 			triviaGameManagerServer.playersAnswered++;
 			triviaGameManagerServer.players[playerId].chosenAnswerIndex = answerIndex;
+			triviaGameManagerServer.players[playerId].timeTaken = triviaGameManagerServer.timeWaited;
 		}
 	}
+
+	[Command]
+	public void CmdSendUsername(string username) {
+		if(username.Length > TriviaGameManagerServer.MAX_CHARACTERS_NAME) {
+			username = username.Substring(0, TriviaGameManagerServer.MAX_CHARACTERS_NAME);
+		}
+
+		triviaGameManagerServer.players[playerId].username = username;
+
+		triviaGameManagerServer.SendLobbyPlayerlist();
+	}
+
 }

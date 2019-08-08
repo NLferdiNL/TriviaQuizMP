@@ -4,6 +4,8 @@
 
 	public LeaderboardData leaderboardData = new LeaderboardData();
 
+	public float timeTaken = -1;
+
 	public int playerId {
 		get {
 			return leaderboardData.playerId;

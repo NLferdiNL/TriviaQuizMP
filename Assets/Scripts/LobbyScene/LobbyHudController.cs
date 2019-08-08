@@ -4,15 +4,45 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class LobbyHudController : MonoBehaviour {
+public partial class LobbyHudController : MonoBehaviour {
+
+	public static LobbyHudController instance;
 
 	private static int DEFAULT_PORT = 7777;
+
+	public TMP_InputField usernameContainer;
 
 	public TMP_InputField ipAddressContainer;
 
 	public TMP_InputField portContainer;
-
+	
 	public Canvas lobbyCanvas;
+
+	public GameObject menuScreen;
+
+	public GameObject serverScreen;
+
+	public GameObject playerlistEntryPrefab;
+
+	public RectTransform lobbyPlayerList;
+
+	public Button startServerButton;
+
+	public string username {
+		get {
+			if(usernameContainer == null) {
+				return "Player";
+			}
+
+			string name = usernameContainer.text;
+
+			if(name.Length > TriviaGameManagerServer.MAX_CHARACTERS_NAME) {
+				return name.Substring(0, TriviaGameManagerServer.MAX_CHARACTERS_NAME);
+			}
+
+			return name;
+		}
+	}
 
 	public string ipAddress {
 		get {
@@ -41,6 +71,12 @@ public class LobbyHudController : MonoBehaviour {
 	}
 
 	private void Start() {
+		if(instance != null && instance != this) {
+			Destroy(this);
+		}
+
+		instance = this;
+
 		if(ipAddressContainer != null) {
 			ipAddressContainer.onValueChanged.AddListener(CheckIPValidity);
 		}
@@ -50,8 +86,57 @@ public class LobbyHudController : MonoBehaviour {
 		}
 	}
 
-	public void ToggleLobbyUI(bool state) {
-		lobbyCanvas.enabled = state;
+	private void OnDestroy() {
+		if(instance == this) {
+			instance = null;
+		}
+	}
+
+	public void ToggleServerStartButtonState(bool state) {
+		startServerButton.interactable = state;
+	}
+	
+	public void ToggleScreen(ScreenState state) {
+		switch(state) {
+			case ScreenState.Closed:
+				CleanLobbyList();
+				ToggleServerStartButtonState(false);
+				menuScreen.SetActive(false);
+				serverScreen.SetActive(false);
+				break;
+			case ScreenState.Lobby:
+				menuScreen.SetActive(false);
+				serverScreen.SetActive(true);
+				break;
+			case ScreenState.Menu:
+				CleanLobbyList();
+				ToggleServerStartButtonState(false);
+				menuScreen.SetActive(true);
+				serverScreen.SetActive(false);
+				break;
+		}
+	}
+
+	public void CleanLobbyList() {
+		LeaderboardItem[] leaderboardItems = lobbyPlayerList.GetComponentsInChildren<LeaderboardItem>();
+
+		for(int i = 0; i < leaderboardItems.Length; i++) {
+			Destroy(leaderboardItems[i].gameObject);
+		}
+	}
+
+	public void UpdateLobbyPlayerlist(LeaderboardData[] leaderboardData) {
+		CleanLobbyList();
+
+		for(int i = 0; i < leaderboardData.Length; i++) {
+			LeaderboardData entry = leaderboardData[i];
+
+			GameObject listItem = Instantiate(playerlistEntryPrefab, lobbyPlayerList);
+
+			LeaderboardItem leaderboardItem = listItem.GetComponent<LeaderboardItem>();
+
+			leaderboardItem.Username = entry.username;
+		}
 	}
 
 	public bool CheckInputValidity() {

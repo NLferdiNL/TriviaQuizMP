@@ -20,7 +20,10 @@ public class LeaderboardItem : MonoBehaviour {
 
 		set {
 			username = value;
-			usernameLabel.text = value;
+
+			if(usernameLabel != null) {
+				usernameLabel.text = value;
+			}
 		}
 	}
 
@@ -40,6 +43,11 @@ public class LeaderboardItem : MonoBehaviour {
 			oldScore = x;
 			scoreLabel.text = IntToReadableNumber(x);
 		}, score, 1.25f);*/
+
+		if(scoreLabel == null) {
+			return;
+		}
+
 		scoreLabel.text = IntToReadableNumber(score);
 
 		oldScore = score;
